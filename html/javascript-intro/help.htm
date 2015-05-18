@@ -1,0 +1,12 @@
+<body>
+<script type="text/javascript">
+function change(c) {
+document.getElementById("demo").innerHTML=c;
+}
+
+</script>
+</body>
+<form name="myForm">
+<input type="text" name="myInput" onChange="change(this.value)"><br>
+<p id="demo"></p>
+</form>

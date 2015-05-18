@@ -1,0 +1,2 @@
+cd $1
+python ../youtube-dl -x $2 > ytdl &

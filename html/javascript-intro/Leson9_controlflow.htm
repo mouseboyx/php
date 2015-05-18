@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Lesson 1 Hello world</title>
+<script type="text/javascript">
+var text = "";
+var i = 0;
+function myF() {
+while (i<10) {
+	text += i+",";
+	i++;
+}
+cars = ['BMW','Volvo','Saab','Ford'];
+for (i=0; i<cars.length; i++) {
+	text+=cars[i]+",";
+}
+
+document.getElementById("demo").innerHTML=text;
+
+var str="@";
+var text2 = "";
+for (var row = 0; row < 10; row++) {
+	for (var col = 0; col < row; col++) {
+		text2+="@";
+	}
+	text2+="<br>";
+}
+document.getElementById("output").innerHTML=text2;
+
+}
+</script>
+</head>
+<body>
+<p id="demo"></p>
+<input type="button" onclick="myF()" value="exec">
+<br>
+<p id="output"></p>
+</body>
+</html>

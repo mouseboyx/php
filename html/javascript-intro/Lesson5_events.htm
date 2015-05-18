@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			background:#222222;
+			color:#ffffff;
+		}
+		table {
+			border-collapse:collapse;
+		}
+		td {
+			border:#000000 1px solid;
+		//	text-align:center;
+		}
+	</style>
+	<script type="text/javascript">
+		function changetext(id) {
+			id.innerHTML="Change";
+		}
+		function mOut(obj) {
+			obj.innerHTML="mouse over this";
+		}
+		function mOver(obj) {
+			obj.innerHTML="mouseover";
+			obj.style.color="#0000ff";
+		}
+		function colorChange(elem,color) {
+			elem.style.color=color;
+		}
+	</script>
+</head>
+<body>
+<h1 onclick="this.innerHTML='Change'">This</h1>
+<h2 onclick="changetext(this)">This Too</h2>
+<h3 onmouseover="mOver(this)" onmouseout="mOut(this)">mouse over this</h3>
+<p id="color" onmousedown="colorChange(this,'#ff0000')" onmouseup="colorChange(this,'#00ff00')">A sample paragraph</p>
+</body>
+</html>

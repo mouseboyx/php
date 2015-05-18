@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			background:#222222;
+			color:#ffffff;
+		}
+		table {
+			border-collapse:collapse;
+		}
+		td {
+			border:#000000 1px solid;
+		//	text-align:center;
+		}
+	</style>
+</head>
+<body>
+	
+	<p>This example calls a function to convert from Fahrenheit, Celcius, Kelvin, and Rankine to any other temperature measurement:</p>
+	<p id="demo"></p>
+	<form name="converter">
+		<table>
+			<tr>
+				<th colspan="2">Convert all standard temperature measurements.</th>
+			</tr>
+			<tr>
+				<td>F:</td>
+				<td><input type="text" size="5" name="f" onChange="fromFahrenheit()"></td>
+			</tr>
+			<tr>
+				<td>C:</td>
+				<td><input type="text" size="5" name="c" onChange="fromCelcius()"></td>
+			</tr>
+			<tr>
+				<td>K:</td>
+				<td><input type="text" size="5" name="k" onchange="fromKelvin()"></td>
+			</tr>
+			<tr>
+				<td>R:</td>
+				<td><input type="text" size="5" name="r" onchange="fromRankine()"></td>
+			</tr>
+				<tr><td colspan="2"><input type="button" onclick="" value="Convert"></td>
+			</tr>
+		</table>
+	</form>
+	<script type="text/javascript">
+		function fromFahrenheit() {
+			document.converter.c.value=(5/9) * (document.converter.f.value - 32);
+			document.converter.k.value=((5/9) * (document.converter.f.value - 32))+273.15;
+			document.converter.r.value=parseFloat(document.converter.f.value)+459.67;
+			
+		//	return (5/9) * (f-32);
+		}
+		function fromCelcius() {
+			document.converter.f.value=(1.8*document.converter.c.value)+32;
+			document.converter.k.value=parseFloat(document.converter.c.value)+273.15;
+			document.converter.r.value=((1.8*document.converter.c.value)+32)+459.67;
+		}
+		function fromKelvin() {
+			document.converter.f.value=(1.8*(document.converter.k.value-273.15))+32;
+			document.converter.c.value=document.converter.k.value-273.15;
+			document.converter.r.value=((1.8*(document.converter.k.value-273.15))+32)+459.67;
+		}
+		function fromRankine() {
+			document.converter.f.value=document.converter.r.value-459.67;
+			document.converter.c.value=((5/9)*((document.converter.r.value-459.67)-32));
+			/*			
+			if (document.converter.r.value==0) {
+				document.converter.k.value=0;
+			} else {
+				document.converter.k.value=parseFloat((5/9)*((document.converter.r.value-459.67)-32))+273.15;
+			}
+			*/
+			document.converter.k.value=document.converter.r.value*(5/9);
+		}
+		/*
+		function convert() {
+			fromFahrenheit();
+			fromCelcius();
+		}
+		*/
+	//	document.getElementById("demo").innerHTML=toCelcius(212);
+	</script>
+	
+	
+</body>
+</html>

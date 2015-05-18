@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Chess</title>
+<script type="text/javascript">
+function init() {
+infoh3 = document.getElementById("info");
+// turn true=white false=black
+turn = true;
+allwhitemoves=[];
+allblackmoves=[];
+whiteincheck=false;
+blackincheck=false;
+whitekingpos=null;
+blackkingpos=null;
+selectedpiece=null;
+pieces = [];
+pieces[0] = ["r","n","b","q","K","b","n","r","p","p","p","p","p","p","p","p",
+"","","","","","","","","","","","","","","","","","","","","","","","","",
+"","","","","","","","p","p","p","p","p","p","p","p","r","n","b","q","K","b","n","r"];
+pieces[1] = [];
+pieces[2] = [];
+moves = [];
+
+document.getElementsByTagName("body")[0].style.height=(document.documentElement.clientHeight-16)+"px";
+iswitch=true
+	alltds=document.getElementsByTagName("td");
+
+	/* name black and white pieces true for white, false for black */
+	for (i=0; i<16; i++) {
+		pieces[1][i]=false;
+	}
+	for (i=48; i<64; i++) {
+		pieces[1][i]=true;
+	}
+	
+	for (i=0; i<alltds.length; i++) {
+		if (i%8==0) {
+			iswitch=!iswitch
+		//	alert(iswitch);
+		}
+		if (!iswitch) {
+			if (i%2 == 0) {
+				alltds[i].style.backgroundColor="#aaaaaa";
+			}		
+			if (i%2 == 1) {		
+				alltds[i].style.backgroundColor="#666666";
+			//	alltds[i].style.color="#ffffff";
+			}
+		}
+
+		if (iswitch) {
+			if (i%2 == 1) {
+				alltds[i].style.backgroundColor="#aaaaaa";
+			}		
+			if (i%2 == 0) {		
+				alltds[i].style.backgroundColor="#666666";
+			//	alltds[i].style.color="#ffffff";
+			}
+		}
+		
+		if (pieces[1][i]==false) {
+			piecespan = document.createElement("img");
+			/*
+			piecespan.style.color="#000000";
+			piecespan.innerHTML=pieces[0][i];
+			*/
+			piecespan.setAttribute("src","b"+pieces[0][i]+".png");
+			alltds[i].appendChild(piecespan);
+			
+		//	alltds[i].innerHTML='<span style="color:#000000;">'+pieces[0][i]+'</span>';
+		}
+		if (pieces[1][i]==true) {
+			piecespan = document.createElement("img");
+		//	piecespan = document.createElement("span");
+		//	piecespan.style.color="#ffffff";
+		//	piecespan.innerHTML=pieces[0][i];
+			piecespan.setAttribute("src","w"+pieces[0][i]+".png");
+			alltds[i].appendChild(piecespan);
+		//	alltds[i].innerHTML='<span style="color:#ffffff;">'+pieces[0][i]+'</span>';
+		}
+
+		/* set switch to see if it is a pawns first move */
+		if (pieces[0][i]=="p") {
+			pieces[2][i]=true;
+		}
+
+		if (pieces[0][i]!=="" && pieces[1][i]==true) {
+		/*
+			listener2 = function(event) {
+																		movepiece(comparetd(selectedpiece),comparetd(event.currentTarget));
+																		updateboard();
+																	};
+			listener1 = function(event) { 
+																if (comparetd(event.currentTarget)!=null) {
+																	alert(pieces[0][comparetd(event.currentTarget)]+","+comparetd(event.currentTarget));
+																}
+																selectedpiece=event.currentTarget;
+																findmoves(comparetd(event.currentTarget));
+																for (r=0; r<moves.length; r++) {
+																	alltds[moves[r]].style.backgroundColor="#ff0000";
+																	alltds[moves[r]].addEventListener("click",listener2);
+
+																}
+																//alert(moves[0]);
+																};
+		*/
+			alltds[i].addEventListener("click",listener1);
+		}
+		
+	}
+	
+		
+}
+
+function comparetd(thetd) {
+	for (i=0; i<alltds.length; i++) {
+		if (alltds[i]==thetd) {
+			return i;
+		}
+	}
+}
+function findallmoves(wob) {
+	if (wob==true) {
+		allwhitemoves = [];
+		for (i=0; i<64; i++) {
+			if (pieces[1][i]==true) {
+				findmoves(i,false) 
+				for (j=0; j<moves.length; j++) {
+					if (pieces[0][moves[j]]=="K" && pieces[1][moves[j]]==false) {
+					blackincheck=true;
+					//	alert("Black King in Check"+j);
+					}
+				}
+				allwhitemoves[allwhitemoves.length]=moves;
+			}
+		}
+		
+	}
+	if (wob==false) {
+		allblackmoves= [];
+		for (i=0; i<64; i++) {
+			if (pieces[1][i]==false) {
+				findmoves(i,false)
+				for (j=0; j<moves.length; j++) {
+					if (pieces[0][moves[j]]=="K" && pieces[1][moves[j]]==true) {
+					whiteincheck=true;
+					//	alert("White King in Check"+j);
+					}
+				}
+				allblackmoves[allblackmoves.length]=moves;
+			}
+		}
+	}
+}
+function findmoves(u,check) {
+	moves = [];
+	// pawn first move black
+	if (pieces[0][u]=="p" && pieces[2][u]==true && pieces[1][u]==false) {
+		if (pieces[0][u+8]=="") {
+			moves[moves.length]=u+8;
+		}
+		if (pieces[0][u+16]=="" && pieces[0][u+8]=="") {
+			moves[moves.length]=u+16;
+		}
+		if (pieces[0][u+7]!="" && u%8!=0 && pieces[1][u+7]==true) {
+			moves[moves.length]=u+7
+		}
+		if (pieces[0][u+9]!="" && (u+1)%8!=0 && pieces[1][u+9]==true) {
+			moves[moves.length]=u+9
+		}
+	}
+	// pawn first move white
+	if (pieces[0][u]=="p" && pieces[2][u]==true && pieces[1][u]==true) {
+		if (pieces[0][u-8]=="") {
+			moves[moves.length]=u-8;
+		}
+		if (pieces[0][u-16]=="" && pieces[0][u-8]=="") {
+			moves[moves.length]=u-16;
+		}
+		if (pieces[0][u-7]!="" && (u+1)%8!=0 && pieces[1][u-7]==false) {
+			moves[moves.length]=u-7
+		}
+		if (pieces[0][u-9]!="" && u%8!=0 && pieces[1][u-9]==false) {
+			moves[moves.length]=u-9
+		}
+	}
+	// black pawn movement after first move
+	if (pieces[0][u]=="p" && pieces[2][u]==false && pieces[1][u]==false) {
+		if (pieces[0][u+8]=="") {
+			moves[moves.length]=u+8;
+		}
+		if (pieces[0][u+7]!="" && u%8!=0 && pieces[1][u+7]==true) {
+			moves[moves.length]=u+7
+		}
+		if (pieces[0][u+9]!="" && (u+1)%8!=0 && pieces[1][u+9]==true) {
+			moves[moves.length]=u+9
+		}
+	}
+	// white pawn movement after first move
+	if (pieces[0][u]=="p" && pieces[2][u]==false && pieces[1][u]==true) {
+		if (pieces[0][u-8]=="") {
+			moves[moves.length]=u-8;
+		}
+		if (pieces[0][u-7]!="" && (u+1)%8!=0 && pieces[1][u-7]==false) {
+			moves[moves.length]=u-7
+		}
+		if (pieces[0][u-9]!="" && u%8!=0 && pieces[1][u-9]==false) {
+			moves[moves.length]=u-9
+		}
+	}
+	// white rook movement
+	if (pieces[0][u]=="r" && pieces[1][u]==true) {
+		// white rook vertical movement
+		// white rook movement down
+		for (rook=8; rook<=63; rook+=8) {
+			if (pieces[0][u+rook]=="") {
+				moves[moves.length]=u+rook;
+			}
+			if (pieces[0][u+rook]!="") {
+				if (pieces[1][u+rook]==false) {
+					moves[moves.length]=u+rook;
+				}
+				break;
+			}
+			
+		}
+		//white rook movement up
+		for (rook=8; rook<=63; rook+=8) {
+			if (pieces[0][u-rook]=="") {
+				moves[moves.length]=u-rook;
+			}
+			if (pieces[0][u-rook]!="") {
+				if (pieces[1][u-rook]==false) {
+					moves[moves.length]=u-rook;
+				}
+				break;
+			}
+			
+		}
+		// white rook horizontal movement
+		// white rook moving to the right
+		for (rook=u+1; rook<u+8; rook++) {
+			if ((u+1)%8==0) {
+				break;
+			}
+			if ((rook+1)%8==0) {
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==false) {
+						moves[moves.length]=rook;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][rook]!="") {
+				if (pieces[1][rook]==false) {
+					moves[moves.length]=rook;
+				}
+			//	alert(rook+","+u);
+				break;
+			}
+			moves[moves.length]=rook;	
+		}
+		// white rook moving to the left
+		for (rook=u-1; rook>u-8; rook--) {
+			if (u%8==0) {
+				break;
+			}
+			if ((rook)%8==0) {
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==false) {
+						moves[moves.length]=rook;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][rook]!="") {
+				if (pieces[1][rook]==false) {
+					moves[moves.length]=rook;
+				}
+			//	alert(rook+","+u);
+				break;
+			}
+			moves[moves.length]=rook;	
+		}
+		
+	}
+	
+	// black rook movement
+	if (pieces[0][u]=="r" && pieces[1][u]==false) {
+	
+		// black rook vertical movement
+		// black rook movement down
+		for (rook=8; rook<=63; rook+=8) {
+			if (pieces[0][u+rook]=="") {
+				moves[moves.length]=u+rook;
+			}
+			if (pieces[0][u+rook]!="") {
+				if (pieces[1][u+rook]==true) {
+					moves[moves.length]=u+rook;
+				}
+				break;
+			}
+			
+		}
+		//black rook movement up
+		for (rook=8; rook<=63; rook+=8) {
+			if (pieces[0][u-rook]=="") {
+				moves[moves.length]=u-rook;
+			}
+			if (pieces[0][u-rook]!="") {
+				if (pieces[1][u-rook]==true) {
+					moves[moves.length]=u-rook;
+				}
+				break;
+			}
+			
+		}
+		// black rook horizontal movement
+		// black rook moving to the right
+		for (rook=u+1; rook<u+8; rook++) {
+			if ((u+1)%8==0) {
+				break;
+			}
+			if ((rook+1)%8==0) {
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==true) {
+						moves[moves.length]=rook;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][rook]!="") {
+				if (pieces[1][rook]==true) {
+					moves[moves.length]=rook;
+				}
+			//	alert(rook+","+u);
+				break;
+			}
+			moves[moves.length]=rook;	
+		}
+		// black rook moving to the left
+		for (rook=u-1; rook>u-8; rook--) {
+			if (u%8==0) {
+				break;
+			}
+			if ((rook)%8==0) {
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==true) {
+						moves[moves.length]=rook;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][rook]!="") {
+				if (pieces[1][rook]==true) {
+					moves[moves.length]=rook;
+				}
+			//	alert(rook+","+u);
+				break;
+			}
+			moves[moves.length]=rook;	
+		}
+	}
+	// white bishop movement
+	if (pieces[0][u]=="b" && pieces[1][u]==true) {
+	
+		// white bishop right-down movement
+		for (bishop=1; (u+(bishop*8)+bishop)%8!=0; bishop++) {
+			if (pieces[0][u+(bishop*8)+bishop]!="") {
+				if (pieces[1][u+(bishop*8)+bishop]==false) {
+					moves[moves.length]=u+(bishop*8)+bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u+(bishop*8)+bishop;
+		}
+		
+		//white bishop right-up movement
+		for (bishop=1; (u-(bishop*8)+bishop)%8!=0; bishop++) {
+			if (pieces[0][u-(bishop*8)+bishop]!="") {
+				if (pieces[1][u-(bishop*8)+bishop]==false) {
+					moves[moves.length]=u-(bishop*8)+bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u-(bishop*8)+bishop;
+		}
+		
+		//white bishop left-down movement
+		for (bishop=1; (u+(bishop*8)-bishop+1)%8!=0; bishop++) {
+			if (pieces[0][u+(bishop*8)-bishop]!="") {
+				if (pieces[1][u+(bishop*8)-bishop]==false) {
+					moves[moves.length]=u+(bishop*8)-bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u+(bishop*8)-bishop;
+		}
+		
+		//white bishop left-up movement
+		for (bishop=1; (u-(bishop*8)-bishop+1)%8!=0; bishop++) {
+			if (pieces[0][u-(bishop*8)-bishop]!="") {
+				if (pieces[1][u-(bishop*8)-bishop]==false) {
+					moves[moves.length]=u-(bishop*8)-bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u-(bishop*8)-bishop;
+		}
+		
+		
+	}
+	
+	// black bishop movement
+	if (pieces[0][u]=="b" && pieces[1][u]==false) {
+	
+		// black bishop right-down movement
+		for (bishop=1; (u+(bishop*8)+bishop)%8!=0; bishop++) {
+			if (pieces[0][u+(bishop*8)+bishop]!="") {
+				if (pieces[1][u+(bishop*8)+bishop]==true) {
+					moves[moves.length]=u+(bishop*8)+bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u+(bishop*8)+bishop;
+		}
+		
+		//black bishop right-up movement
+		for (bishop=1; (u-(bishop*8)+bishop)%8!=0; bishop++) {
+			if (pieces[0][u-(bishop*8)+bishop]!="") {
+				if (pieces[1][u-(bishop*8)+bishop]==true) {
+					moves[moves.length]=u-(bishop*8)+bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u-(bishop*8)+bishop;
+		}
+		
+		//black bishop left-down movement
+		for (bishop=1; (u+(bishop*8)-bishop+1)%8!=0; bishop++) {
+			if (pieces[0][u+(bishop*8)-bishop]!="") {
+				if (pieces[1][u+(bishop*8)-bishop]==true) {
+					moves[moves.length]=u+(bishop*8)-bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u+(bishop*8)-bishop;
+		}
+		
+		//black bishop left-up movement
+		for (bishop=1; (u-(bishop*8)-bishop+1)%8!=0; bishop++) {
+			if (pieces[0][u-(bishop*8)-bishop]!="") {
+				if (pieces[1][u-(bishop*8)-bishop]==true) {
+					moves[moves.length]=u-(bishop*8)-bishop;
+				}
+				break;
+			}
+			moves[moves.length]=u-(bishop*8)-bishop;
+		}
+		
+		
+	}
+	
+	//white queen movement
+	if (pieces[0][u]=="q" && pieces[1][u]==true) {
+	
+		// white queen right-down movement
+		for (queen=1; (u+(queen*8)+queen)%8!=0; queen++) {
+			if (pieces[0][u+(queen*8)+queen]!="") {
+				if (pieces[1][u+(queen*8)+queen]==false) {
+					moves[moves.length]=u+(queen*8)+queen;
+				}
+				break;
+			}
+			moves[moves.length]=u+(queen*8)+queen;
+		}
+		
+		//white queen right-up movement
+		for (queen=1; (u-(queen*8)+queen)%8!=0; queen++) {
+			if (pieces[0][u-(queen*8)+queen]!="") {
+				if (pieces[1][u-(queen*8)+queen]==false) {
+					moves[moves.length]=u-(queen*8)+queen;
+				}
+				break;
+			}
+			moves[moves.length]=u-(queen*8)+queen;
+		}
+		
+		//white queen left-down movement
+		for (queen=1; (u+(queen*8)-queen+1)%8!=0; queen++) {
+			if (pieces[0][u+(queen*8)-queen]!="") {
+				if (pieces[1][u+(queen*8)-queen]==false) {
+					moves[moves.length]=u+(queen*8)-queen;
+				}
+				break;
+			}
+			moves[moves.length]=u+(queen*8)-queen;
+		}
+		
+		//white queen left-up movement
+		for (queen=1; (u-(queen*8)-queen+1)%8!=0; queen++) {
+			if (pieces[0][u-(queen*8)-queen]!="") {
+				if (pieces[1][u-(queen*8)-queen]==false) {
+					moves[moves.length]=u-(queen*8)-queen;
+				}
+				break;
+			}
+			moves[moves.length]=u-(queen*8)-queen;
+		}
+		
+		// white queen vertical movement
+		// white queen movement down
+		for (queen=8; queen<=63; queen+=8) {
+			if (pieces[0][u+queen]=="") {
+				moves[moves.length]=u+queen;
+			}
+			if (pieces[0][u+queen]!="") {
+				if (pieces[1][u+queen]==false) {
+					moves[moves.length]=u+queen;
+				}
+				break;
+			}
+			
+		}
+		//white queen movement up
+		for (queen=8; queen<=63; queen+=8) {
+			if (pieces[0][u-queen]=="") {
+				moves[moves.length]=u-queen;
+			}
+			if (pieces[0][u-queen]!="") {
+				if (pieces[1][u-queen]==false) {
+					moves[moves.length]=u-queen;
+				}
+				break;
+			}
+			
+		}
+		// white queen horizontal movement
+		// white queen moving to the right
+		for (queen=u+1; queen<u+8; queen++) {
+			if ((u+1)%8==0) {
+				break;
+			}
+			if ((queen+1)%8==0) {
+				if (pieces[0][queen]=="") {
+					moves[moves.length]=queen
+				}
+				if (pieces[0][queen]!="") {
+					if (pieces[1][queen]==false) {
+						moves[moves.length]=queen;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][queen]!="") {
+				if (pieces[1][queen]==false) {
+					moves[moves.length]=queen;
+				}
+			//	alert(queen+","+u);
+				break;
+			}
+			moves[moves.length]=queen;	
+		}
+		// white queen moving to the left
+		for (queen=u-1; queen>u-8; queen--) {
+			if (u%8==0) {
+				break;
+			}
+			if ((queen)%8==0) {
+				if (pieces[0][queen]=="") {
+					moves[moves.length]=queen
+				}
+				if (pieces[0][queen]!="") {
+					if (pieces[1][queen]==false) {
+						moves[moves.length]=queen;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][queen]!="") {
+				if (pieces[1][queen]==false) {
+					moves[moves.length]=queen;
+				}
+			//	alert(queen+","+u);
+				break;
+			}
+			moves[moves.length]=queen;	
+		}
+	}
+	
+	//black queen movement
+	if (pieces[0][u]=="q" && pieces[1][u]==false) {
+	
+		// black queen right-down movement
+		for (queen=1; (u+(queen*8)+queen)%8!=0; queen++) {
+			if (pieces[0][u+(queen*8)+queen]!="") {
+				if (pieces[1][u+(queen*8)+queen]==true) {
+					moves[moves.length]=u+(queen*8)+queen;
+				}
+				break;
+			}
+			moves[moves.length]=u+(queen*8)+queen;
+		}
+		
+		//black queen right-up movement
+		for (queen=1; (u-(queen*8)+queen)%8!=0; queen++) {
+			if (pieces[0][u-(queen*8)+queen]!="") {
+				if (pieces[1][u-(queen*8)+queen]==true) {
+					moves[moves.length]=u-(queen*8)+queen;
+				}
+				break;
+			}
+			moves[moves.length]=u-(queen*8)+queen;
+		}
+		
+		//black queen left-down movement
+		for (queen=1; (u+(queen*8)-queen+1)%8!=0; queen++) {
+			if (pieces[0][u+(queen*8)-queen]!="") {
+				if (pieces[1][u+(queen*8)-queen]==true) {
+					moves[moves.length]=u+(queen*8)-queen;
+				}
+				break;
+			}
+			moves[moves.length]=u+(queen*8)-queen;
+		}
+		
+		//black queen left-up movement
+		for (queen=1; (u-(queen*8)-queen+1)%8!=0; queen++) {
+			if (pieces[0][u-(queen*8)-queen]!="") {
+				if (pieces[1][u-(queen*8)-queen]==true) {
+					moves[moves.length]=u-(queen*8)-queen;
+				}
+				break;
+			}
+			moves[moves.length]=u-(queen*8)-queen;
+		}
+		
+		// black queen vertical movement
+		// black queen movement down
+		for (queen=8; queen<=63; queen+=8) {
+			if (pieces[0][u+queen]=="") {
+				moves[moves.length]=u+queen;
+			}
+			if (pieces[0][u+queen]!="") {
+				if (pieces[1][u+queen]==true) {
+					moves[moves.length]=u+queen;
+				}
+				break;
+			}
+			
+		}
+		//black queen movement up
+		for (queen=8; queen<=63; queen+=8) {
+			if (pieces[0][u-queen]=="") {
+				moves[moves.length]=u-queen;
+			}
+			if (pieces[0][u-queen]!="") {
+				if (pieces[1][u-queen]==true) {
+					moves[moves.length]=u-queen;
+				}
+				break;
+			}
+			
+		}
+		// black queen horizontal movement
+		// black queen moving to the right
+		for (queen=u+1; queen<u+8; queen++) {
+			if ((u+1)%8==0) {
+				break;
+			}
+			if ((queen+1)%8==0) {
+				if (pieces[0][queen]=="") {
+					moves[moves.length]=queen
+				}
+				if (pieces[0][queen]!="") {
+					if (pieces[1][queen]==true) {
+						moves[moves.length]=queen;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][queen]!="") {
+				if (pieces[1][queen]==true) {
+					moves[moves.length]=queen;
+				}
+			//	alert(queen+","+u);
+				break;
+			}
+			moves[moves.length]=queen;	
+		}
+		// black queen moving to the left
+		for (queen=u-1; queen>u-8; queen--) {
+			if (u%8==0) {
+				break;
+			}
+			if ((queen)%8==0) {
+				if (pieces[0][queen]=="") {
+					moves[moves.length]=queen
+				}
+				if (pieces[0][queen]!="") {
+					if (pieces[1][queen]==true) {
+						moves[moves.length]=queen;
+					}
+				}
+				
+				break;
+			}
+			
+			if (pieces[0][queen]!="") {
+				if (pieces[1][queen]==true) {
+					moves[moves.length]=queen;
+				}
+			//	alert(queen+","+u);
+				break;
+			}
+			moves[moves.length]=queen;	
+		}
+	}
+	// White Knight movement
+	if (pieces[0][u]=="n" && pieces[1][u]==true) {
+	
+		if ((u+1)%8!=0 && u>15) {
+			if (pieces[0][u-15]=="") {
+				moves[moves.length]=u-15;
+			}
+			if (pieces[1][u-15]==false) {
+				moves[moves.length]=u-15;
+			}
+		}
+		if ((u+1)%8!=0 && u<47) {
+			if (pieces[0][u+17]=="") {
+				moves[moves.length]=u+17;
+			}
+			if (pieces[1][u+17]==false) {
+				moves[moves.length]=u+17;
+			}
+		}
+		
+		if ((u)%8!=0 && u>15) {
+			if (pieces[0][u-17]=="") {
+				moves[moves.length]=u-17;
+			}
+			if (pieces[1][u-17]==false) {
+				moves[moves.length]=u-17;
+			}
+		}
+		if ((u)%8!=0 && u<47) {
+			if (pieces[0][u+15]=="") {
+				moves[moves.length]=u+15;
+			}
+			if (pieces[1][u+15]==false) {
+				moves[moves.length]=u+15;
+			}
+		}
+		
+		if ((u+1)%8!=0 && (u+2)%8!=0) {
+			if (pieces[0][u-6]=="") {
+				moves[moves.length]=u-6;
+			}
+			if (pieces[1][u-6]==false) {
+				moves[moves.length]=u-6;
+			}
+		}
+		if ((u+1)%8!=0 && (u+2)%8!=0) {
+			if (pieces[0][u+10]=="") {
+				moves[moves.length]=u+10;
+			}
+			if (pieces[1][u+10]==false) {
+				moves[moves.length]=u+10;
+			}
+		}
+		
+		if ((u)%8!=0 && (u-1)%8!=0) {
+			if (pieces[0][u+6]=="") {
+				moves[moves.length]=u+6;
+			}
+			if (pieces[1][u+6]==false) {
+				moves[moves.length]=u+6;
+			}
+		}
+		if ((u)%8!=0 && (u-1)%8!=0) {
+			if (pieces[0][u-10]=="") {
+				moves[moves.length]=u-10;
+			}
+			if (pieces[1][u-10]==false) {
+				moves[moves.length]=u-10;
+			}
+		}
+	}
+	// Black Knight movement
+	if (pieces[0][u]=="n" && pieces[1][u]==false) {
+	
+		if ((u+1)%8!=0 && u>15) {
+			if (pieces[0][u-15]=="") {
+				moves[moves.length]=u-15;
+			}
+			if (pieces[1][u-15]==true) {
+				moves[moves.length]=u-15;
+			}
+		}
+		if ((u+1)%8!=0 && u<47) {
+			if (pieces[0][u+17]=="") {
+				moves[moves.length]=u+17;
+			}
+			if (pieces[1][u+17]==true) {
+				moves[moves.length]=u+17;
+			}
+		}
+		
+		if ((u)%8!=0 && u>15) {
+			if (pieces[0][u-17]=="") {
+				moves[moves.length]=u-17;
+			}
+			if (pieces[1][u-17]==true) {
+				moves[moves.length]=u-17;
+			}
+		}
+		if ((u)%8!=0 && u<47) {
+			if (pieces[0][u+15]=="") {
+				moves[moves.length]=u+15;
+			}
+			if (pieces[1][u+15]==true) {
+				moves[moves.length]=u+15;
+			}
+		}
+		
+		if ((u+1)%8!=0 && (u+2)%8!=0) {
+			if (pieces[0][u-6]=="") {
+				moves[moves.length]=u-6;
+			}
+			if (pieces[1][u-6]==true) {
+				moves[moves.length]=u-6;
+			}
+		}
+		if ((u+1)%8!=0 && (u+2)%8!=0) {
+			if (pieces[0][u+10]=="") {
+				moves[moves.length]=u+10;
+			}
+			if (pieces[1][u+10]==true) {
+				moves[moves.length]=u+10;
+			}
+		}
+		
+		if ((u)%8!=0 && (u-1)%8!=0) {
+			if (pieces[0][u+6]=="") {
+				moves[moves.length]=u+6;
+			}
+			if (pieces[1][u+6]==true) {
+				moves[moves.length]=u+6;
+			}
+		}
+		if ((u)%8!=0 && (u-1)%8!=0) {
+			if (pieces[0][u-10]=="") {
+				moves[moves.length]=u-10;
+			}
+			if (pieces[1][u-10]==true) {
+				moves[moves.length]=u-10;
+			}
+		}
+	}
+	
+	// White kings moves
+	
+	if (pieces[0][u]=="K" && pieces[1][u]==true) {
+		if ((u+1)%8!=0) {
+			if (pieces[0][u+1]=="") {
+				moves[moves.length]=u+1;
+			}
+			if (pieces[1][u+1]==false) {
+				moves[moves.length]=u+1;
+			}
+			if (pieces[0][u-7]=="") {
+				moves[moves.length]=u-7;
+			}
+			if (pieces[1][u-7]==false) {
+				moves[moves.length]=u-7;
+			}
+			if (pieces[0][u+9]=="") {
+				moves[moves.length]=u+9;
+			}
+			if (pieces[1][u+9]==false) {
+				moves[moves.length]=u+9;
+			}
+		}
+		if (u%8!=0) {
+			if (pieces[0][u-9]=="") {
+				moves[moves.length]=u-9;
+			}
+			if (pieces[1][u-9]==false) {
+				moves[moves.length]=u-9;
+			}
+			if (pieces[0][u-1]=="") {
+				moves[moves.length]=u-1;
+			}
+			if (pieces[1][u-1]==false) {
+				moves[moves.length]=u-1;
+			}
+			if (pieces[0][u+7]=="") {
+				moves[moves.length]=u+7;
+			}
+			if (pieces[1][u+7]==false) {
+				moves[moves.length]=u+7;
+			}
+		}
+		
+		if (u>7) {
+			if (pieces[0][u-8]=="") {
+				moves[moves.length]=u-8;
+			}
+			if (pieces[1][u-8]==false) {
+				moves[moves.length]=u-8;
+			}
+		}
+		
+		if (u<56) {
+			if (pieces[0][u+8]=="") {
+				moves[moves.length]=u+8;
+			}
+			if (pieces[1][u+8]==false) {
+				moves[moves.length]=u+8;
+			}
+		}
+	}
+	
+	// Black kings moves
+	
+	if (pieces[0][u]=="K" && pieces[1][u]==false) {
+		if ((u+1)%8!=0) {
+			if (pieces[0][u+1]=="") {
+				moves[moves.length]=u+1;
+			}
+			if (pieces[1][u+1]==true) {
+				moves[moves.length]=u+1;
+			}
+			if (pieces[0][u-7]=="") {
+				moves[moves.length]=u-7;
+			}
+			if (pieces[1][u-7]==true) {
+				moves[moves.length]=u-7;
+			}
+			if (pieces[0][u+9]=="") {
+				moves[moves.length]=u+9;
+			}
+			if (pieces[1][u+9]==true) {
+				moves[moves.length]=u+9;
+			}
+		}
+		if (u%8!=0) {
+			if (pieces[0][u-9]=="") {
+				moves[moves.length]=u-9;
+			}
+			if (pieces[1][u-9]==true) {
+				moves[moves.length]=u-9;
+			}
+			if (pieces[0][u-1]=="") {
+				moves[moves.length]=u-1;
+			}
+			if (pieces[1][u-1]==true) {
+				moves[moves.length]=u-1;
+			}
+			if (pieces[0][u+7]=="") {
+				moves[moves.length]=u+7;
+			}
+			if (pieces[1][u+7]==true) {
+				moves[moves.length]=u+7;
+			}
+		}
+		
+		if (u>7) {
+			if (pieces[0][u-8]=="") {
+				moves[moves.length]=u-8;
+			}
+			if (pieces[1][u-8]==true) {
+				moves[moves.length]=u-8;
+			}
+		}
+		
+		if (u<56) {
+			if (pieces[0][u+8]=="") {
+				moves[moves.length]=u+8;
+			}
+			if (pieces[1][u+8]==true) {
+				moves[moves.length]=u+8;
+			}
+		}
+	}
+	
+		/*
+		if (u%8==0) {
+			for (rook=u+1; rook<u+8; rook++) {
+				
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==false) {
+						moves[moves.length]=rook
+					}
+					break;
+				}
+			}
+		}
+		if ((u+1)%8==0) {
+			for (rook=u-1; rook>u-8; rook--) {
+				
+				if (pieces[0][rook]=="") {
+					moves[moves.length]=rook
+				}
+				if (pieces[0][rook]!="") {
+					if (pieces[1][rook]==false) {
+						moves[moves.length]=rook
+					}
+					break;
+				}
+			}
+		}
+		*/
+		/*
+		for (rook=0; pieces[0][u+rook]==""; rook++) {
+			if (u+rook
+		*/
+	
+	
+	
+	// moves cannot extend past board
+	for (t=0; t<moves.length; t++) {
+		if (moves[t]>63) {
+			moves[t]=undefined;
+		}
+		if (moves[t]<0) {
+			moves[t]=undefined;
+		}
+	}
+	/*
+	//check for white in check
+	if (turn==false && check==true) {
+		for (j=0; j<moves.length; j++) {
+			if (pieces[0][moves[j]]=="K" && pieces[1][moves[j]]==true) {
+				whiteincheck=true;
+			//	alert("whiteincheck");
+			}
+			
+		}
+	}
+	
+	//check for black in check
+	if (turn==true && check==true) {
+		for (j=0; j<moves.length; j++) {
+			if (pieces[0][moves[j]]=="K" && pieces[1][moves[j]]==false) {
+				blackincheck=true;
+			//	alert("blackincheck");
+			}
+		}
+	}
+	*/		
+
+	
+}
+
+function movepiece(start,stop) {
+	pieces[0][stop]=pieces[0][start];
+	pieces[1][stop]=pieces[1][start];
+	pieces[2][stop]=pieces[2][start];
+	pieces[2][stop]=false;
+	pieces[0][start]=""
+	pieces[1][start]=null;
+	pieces[2][start]=null;
+	if (pieces[0][stop]=="p" && pieces[1][stop]==true && stop>=0 && stop<=7) {
+		pieces[0][stop]="q";
+	}
+	if (pieces[0][stop]=="p" && pieces[1][stop]==false && stop>=56 && stop<=63) {
+		pieces[0][stop]="q";
+	}
+	findallmoves(true);
+	findallmoves(false);
+	findmoves(stop,true);
+	if (whiteincheck) {
+		
+	}
+	for (r=0; r<moves.length; r++) {
+		
+		
+			alltds[moves[r]].removeEventListener("click",listener2);
+		
+	}
+//	alert(stop);
+//	alert(start);
+}
+
+function updateboard() {
+iswitch=true;
+for (i=0; i<alltds.length; i++) {
+	alltds[i].innerHTML="";
+	if (pieces[1][i]==false) {
+		piecespan = document.createElement("img");
+		/*
+			piecespan = document.createElement("span");
+			piecespan.style.color="#000000";
+			piecespan.innerHTML=pieces[0][i];
+			*/
+			piecespan.setAttribute("src","b"+pieces[0][i]+".png");
+			alltds[i].appendChild(piecespan);
+			
+		//	alltds[i].innerHTML='<span style="color:#000000;">'+pieces[0][i]+'</span>';
+	}
+	if (pieces[1][i]==true) {
+		piecespan = document.createElement("img");
+		/*
+		piecespan = document.createElement("span");
+		piecespan.style.color="#ffffff";
+		piecespan.innerHTML=pieces[0][i];
+		*/
+		piecespan.setAttribute("src","w"+pieces[0][i]+".png");
+		alltds[i].appendChild(piecespan);
+	//	alltds[i].innerHTML='<span style="color:#ffffff;">'+pieces[0][i]+'</span>';
+	}
+	if (i%8==0) {
+			iswitch=!iswitch
+		//	alert(iswitch);
+		}
+		if (!iswitch) {
+			if (i%2 == 0) {
+				alltds[i].style.background="#aaaaaa";
+			}		
+			if (i%2 == 1) {		
+				alltds[i].style.background="#666666";
+			//	alltds[i].style.color="#ffffff";
+			}
+		}
+
+		if (iswitch) {
+			if (i%2 == 1) {
+				alltds[i].style.background="#aaaaaa";
+			}		
+			if (i%2 == 0) {		
+				alltds[i].style.background="#666666";
+			//	alltds[i].style.color="#ffffff";
+			}
+		}
+		alltds[i].removeEventListener("click",listener1);
+		alltds[i].removeEventListener("click",listener2);
+		alltds[i].removeEventListener("click",cancelmove);
+		
+		if (pieces[0][i]!=="" && pieces[1][i]==false && turn==true) {
+			alltds[i].addEventListener("click",listener1);
+		}
+		if (pieces[0][i]!=="" && pieces[1][i]==true && turn==false) {
+			alltds[i].addEventListener("click",listener1);
+		}
+}
+	turn=!turn
+	if (turn) {
+		infoh3.style.backgroundColor="#ffffff";
+		infoh3.style.color="#000000";
+		infoh3.innerHTML="White's Turn";
+		if (whiteincheck) {
+			infoh3.innerHTML+=", White in check";
+		}
+	}
+	if (!turn) {
+		infoh3.style.backgroundColor="#000000";
+		infoh3.style.color="#ffffff";
+		infoh3.innerHTML="Black's Turn";
+		if (blackincheck) {
+			infoh3.innerHTML+=", Black in check";
+		}
+	}
+}
+
+function listener1(event) {
+
+	if (comparetd(event.currentTarget)!=null) {
+	//	alert(pieces[0][comparetd(event.currentTarget)]+","+comparetd(event.currentTarget));
+	}
+	selectedpiece=event.currentTarget;
+	findmoves(comparetd(event.currentTarget));
+	// to do: make it so only one piece can be selected at a time
+	if (moves.length>0) {
+		selectedpiece.removeEventListener("click",listener1);
+		for (h=0; h<64; h++) {
+			alltds[h].removeEventListener("click",listener1);
+		}
+		selectedpiece.addEventListener("click",cancelmove);
+		
+		for (r=0; r<moves.length; r++) {
+			if (moves[r]>=0 && moves[r]<64) {
+			alltds[moves[r]].style.background="linear-gradient(-135deg,#6666ff,#000055)";
+			alltds[moves[r]].addEventListener("click",listener2);
+			}
+
+		}
+	}
+}
+
+function listener2(event) {
+
+	movepiece(comparetd(selectedpiece),comparetd(event.currentTarget));
+	updateboard();
+}
+function cancelmove(event) {
+
+for (r=0; r<moves.length; r++) {
+		if (moves[r]>=0 && moves[r]<64) {
+		alltds[moves[r]].removeEventListener("click",listener2);
+		}
+
+	}
+	iswitch=true
+	for (i=0; i<alltds.length; i++) {
+		if (i%8==0) {
+				iswitch=!iswitch
+			//	alert(iswitch);
+			}
+			if (!iswitch) {
+				if (i%2 == 0) {
+					alltds[i].style.background="#aaaaaa";
+				}		
+				if (i%2 == 1) {		
+					alltds[i].style.background="#666666";
+				//	alltds[i].style.color="#ffffff";
+				}
+			}
+
+			if (iswitch) {
+				if (i%2 == 1) {
+					alltds[i].style.background="#aaaaaa";
+				}		
+				if (i%2 == 0) {		
+					alltds[i].style.background="#666666";
+				//	alltds[i].style.color="#ffffff";
+				}
+			}
+		}
+		event.currentTarget.removeEventListener("click",cancelmove);
+		for (h=0; h<64; h++) {
+			if (turn==true && pieces[0][h]!="" && pieces[1][h]==true) {
+				alltds[h].addEventListener("click",listener1);
+			}
+			if (turn==false && pieces[0][h]!="" && pieces[1][h]==false) {
+				alltds[h].addEventListener("click",listener1);
+			}
+			
+		}
+		
+}
+</script>
+<style type="text/css">
+html {
+
+	}
+body {
+	background:linear-gradient(45deg,#444444,#aaaaaa,#444444);
+	}
+table {
+	border: 20px inset #101010;
+	border-collapse:collapse;
+	/*
+	margin-left:auto;
+	margin-right:auto;
+	*/
+	}
+td {
+	width:65px;
+	height:65px;
+	text-align:center;
+	padding:0px;
+	padding-top:0px;
+	font-weight:bold;
+}
+h3 {
+	background-color:#ffffff;
+	margin:0px;
+	padding:0px;
+	margin-bottom:5px;
+	}
+span:hover {
+	cursor:default;
+	}
+span {
+	cursor:default;
+	}
+/*
+td:nth-of-type(3) {
+	background-color:#000000;
+	color:#ffffff;
+}
+td:nth-of-type(2) {
+	background-color:#eeeeee;
+	color:#000000;
+}
+*/
+</style>
+</head>
+<body onload="init()">
+<h3 id="info">White's turn</h3>
+	<table>
+		<tr>
+			<td id="a8"></td>
+			<td id="b8"></td>
+			<td id="c8"></td>
+			<td id="d8"></td>
+			<td id="e8"></td>
+			<td id="f8"></td>
+			<td id="g8"></td>
+			<td id="h8"></td>
+		</tr>
+		<tr>
+			<td id="a7"></td>
+			<td id="b7"></td>
+			<td id="c7"></td>
+			<td id="d7"></td>
+			<td id="e7"></td>
+			<td id="f7"></td>
+			<td id="g7"></td>
+			<td id="h7"></td>
+		</tr>
+		<tr>
+			<td id="a6"></td>
+			<td id="b6"></td>
+			<td id="c6"></td>
+			<td id="d6"></td>
+			<td id="e6"></td>
+			<td id="f6"></td>
+			<td id="g6"></td>
+			<td id="h6"></td>
+		</tr>
+		<tr>
+			<td id="a5"></td>
+			<td id="b5"></td>
+			<td id="c5"></td>
+			<td id="d5"></td>
+			<td id="e5"></td>
+			<td id="f5"></td>
+			<td id="g5"></td>
+			<td id="h5"></td>
+		</tr>
+		<tr>
+			<td id="a4"></td>
+			<td id="b4"></td>
+			<td id="c4"></td>
+			<td id="d4"></td>
+			<td id="e4"></td>
+			<td id="f4"></td>
+			<td id="g4"></td>
+			<td id="h4"></td>
+		</tr>
+		<tr>
+			<td id="a3"></td>
+			<td id="b3"></td>
+			<td id="c3"></td>
+			<td id="d3"></td>
+			<td id="e3"></td>
+			<td id="f3"></td>
+			<td id="g3"></td>
+			<td id="h3"></td>
+		</tr>
+		<tr>
+			<td id="a2"></td>
+			<td id="b2"></td>
+			<td id="c2"></td>
+			<td id="d2"></td>
+			<td id="e2"></td>
+			<td id="f2"></td>
+			<td id="g2"></td>
+			<td id="h2"></td>
+		</tr>
+		<tr>
+			<td id="a1"></td>
+			<td id="b1"></td>
+			<td id="c1"></td>
+			<td id="d1"></td>
+			<td id="e1"></td>
+			<td id="f1"></td>
+			<td id="g1"></td>
+			<td id="h1"></td>
+		</tr>
+	</table>
+</body>
+</html>

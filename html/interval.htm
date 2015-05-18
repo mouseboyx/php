@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SetInterval</title>
+<script type="text/javascript">
+	function init() {
+		seconds = 10764;
+		document.getElementById("thei").addEventListener("keyup",setSec);
+		document.getElementById("resett").addEventListener("click",resettime);
+		theInterval = setInterval(dostuff,1000);
+	}
+	function setSec() {
+		if (document.getElementById("thei").value!="") {
+			seconds=parseInt(document.getElementById("thei").value);
+		}
+	}
+	function resettime() {
+		clearInterval(theInterval);
+		seconds=0;
+		document.getElementById("time").innerHTML="00:00";
+		document.getElementById("thei").value=0;
+		theInterval = setInterval(dostuff,1000);
+	}
+	function dostuff() {
+		//seconds = parseInt(document.getElementById("time").innerHTML);
+		seconds+=1;
+		document.getElementById("thei").value=seconds;
+//		document.getElementById("f1").setAttribute("src","http://localhost/echoback.php?echo="+seconds);
+		if (seconds<60) {
+			if ((seconds%60)<10) {
+				document.getElementById("time").innerHTML="0"+Math.floor(seconds/60)+":0"+(seconds%60);
+				
+			} else {
+				document.getElementById("time").innerHTML="00:"+seconds;
+			}
+		} else {
+			if ((seconds/60)<60) {
+				if ((seconds/60)<10) {
+					if ((seconds%60)<10) {
+						document.getElementById("time").innerHTML="0"+Math.floor(seconds/60)+":0"+(seconds%60);
+				
+					} else {
+						document.getElementById("time").innerHTML="0"+Math.floor(seconds/60)+":"+(seconds%60);
+					}
+				} else {
+					if ((seconds%60)<10) {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60)+":0"+(seconds%60);
+				
+					} else {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60)+":"+(seconds%60);
+					}
+				}
+			} else {
+				if (((seconds/60)%60)<10) {
+					if ((seconds%60)<10) {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60/60)+":0"+(Math.floor(seconds/60)%60)+":0"+(seconds%60);
+				
+					} else {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60/60)+":0"+(Math.floor(seconds/60)%60)+":"+(seconds%60);
+					}				
+				} else {
+					if ((seconds%60)<10) {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60/60)+":"+(Math.floor(seconds/60)%60)+":0"+(seconds%60);
+				
+					} else {
+						document.getElementById("time").innerHTML=Math.floor(seconds/60/60)+":"+(Math.floor(seconds/60)%60)+":"+(seconds%60);
+					}
+				}
+			}
+		}
+	}
+</script>
+</head>
+<body onload="init()">
+<span id="time"></span><br>
+<input type="text" id="thei"><br>
+<input type="button" id="resett" value="reset timer"><br>
+<iframe style="visibility:hidden;" id="f1" src="about:blank"></iframe>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body {
+			background:#222222;
+			color:#ffffff;
+		}
+		table {
+			border-collapse:collapse;
+		}
+		td {
+			border:#000000 1px solid;
+		//	text-align:center;
+		}
+	</style>
+	<script type="text/javascript">
+		var person = {
+			firstName : "John",
+			lastName  : "Doe",
+			age       : 50,
+			eyeColor  : "blue"
+		};
+		var record = {
+			firstName        : "David",
+			lastName         : "Carley",
+			middleInitial    : "R",
+			address          : "1913 Golden Rain Dr",
+			city             : "Lawrence",
+			state            : "Kansas",
+			ssn              : "000000000",
+			cellPhone        : "9137753463",
+			emailAddress     : "mouseboyx@gmail.com",
+			emergencyContact : "Dan Carley"
+		};
+		function init() {		
+		//	document.getElementById("output").innerHTML=person.firstName+" is "+person.age+" years old.";
+			document.getElementById("output").innerHTML="First Name:"+record["firstName"]+
+				" Last Name:"+record.lastName;
+		}
+	</script>
+</head>
+<body onload="init()">
+<p id="output"></p>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>David Ross Carley Javascript Final</title>
+<script type="text/javascript">
+
+///// Final Project David Ross Carley /////
+/////       Intro to Javascript       /////
+
+		var selectedArray = [];	
+		var item = [];
+		var cancel = [];
+		var total = 0;	
+		// create element for the grand total
+		var totalspan = document.createElement("span");
+		
+		var cheeseBurger = {
+			title      :"Cheeseburger",
+			description:"A delicious made to order cheeseburger with cheddar cheese.",
+			price      :5.90
+		}
+		var pizza = {
+			title      :"Pizza",
+			description:"A mushroom, black olive, and pepperoni pizza with mozzarella cheese.",
+			price      :7.50
+		}
+		var hotDog = {
+			title      :"Hotdog",
+			description:"An all beef hotdog on a fresh bun.",
+			price      :3.50
+		}
+		var salad = {
+			title      :"Salad",
+			description:"Romaine lettuce asiago cheese and caesar dressing.",
+			price      :4.65
+		}
+
+	function updateInfo(object) {
+		// set inner HTML of title,description, and price
+		document.getElementById("title").innerHTML=object.title;
+		document.getElementById("description").innerHTML=object.description;
+		document.getElementById("price").innerHTML="$"+object.price.toFixed(2);
+	
+	}
+	// this function removes an item from the list and updates the grand total accordingly
+	function removeItem(object,object2) {
+	//	alert(object);
+		//adjust the running grand total when item is removed from the list
+		total = 0 + total + 0 - object2.itemprice;
+	//	alert(object2.itemprice);
+		totalspan.innerHTML="<br>"+total.toFixed(2)+" Grand Total";
+		document.getElementById("total").appendChild(totalspan);
+		object.parentElement.removeChild(object);
+		object2.parentElement.removeChild(object2);
+		
+	}
+
+	function addItem(object) {
+		item=document.createElement("span");
+		itemprice = document.createElement("span");
+		// right and left bracket element creation for the sides of the removal link
+		leftbracket = document.createElement("span");
+		leftbracket.innerHTML="[";
+		rightbracket = document.createElement("span");
+		
+		rightbracket.innerHTML="]<br>";
+		
+		itemprice.innerHTML="$"+object.price.toFixed(2)+"<br>";
+		// store object price for use when removing an item		
+		item.itemprice=object.price;
+		
+		item.innerHTML=object.title;
+		//store the element itemprice in item.price for later removal
+		item.price=itemprice;
+		// add the item to the list
+		document.getElementById("selected").appendChild(item);
+		// cancel button [X] element creation	
+		cancel=document.createElement("a");
+		cancel.innerHTML="X";
+		cancel.setAttribute("href","javascript:void(0)");	
+		// make it possible to remove items with the [X]	
+		cancel.addEventListener("click", 
+			function(event){ 
+				removeItem(event.currentTarget.parentElement.price,event.currentTarget.parentElement);
+				});		
+		item.appendChild(leftbracket);		
+		item.appendChild(cancel);
+		item.appendChild(rightbracket);
+		document.getElementById("total").appendChild(itemprice);
+		// adjust the running grand total when item is added to the list
+		total = 0 + total + 0 + object.price;
+
+//		document.getElementById("totalspan").innerHTML=total;
+//		document.getElementById("total").removeChild(totalspan);
+		
+		totalspan.innerHTML="<br>$"+total.toFixed(2)+" Grand Total";
+		
+		document.getElementById("total").appendChild(totalspan);
+		
+	}
+	
+	
+</script>
+<style type="text/css">
+td {
+	border:1px solid #000000;
+	border-radius:1px;
+	padding:10px;
+	}
+#selected {
+	vertical-align:top;
+}
+.item {
+	border: 1px solid:#0000ff;
+	border-radius:3px;
+	background-color:#aaaaff;
+	cursor:pointer;
+}
+img {
+	margin-right:auto;
+	margin-left:20px;
+	padding:10px;
+
+}
+
+</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<th colspan="2">Ross' great food done quick.</th>
+		</tr>
+		<tr>
+			<td class="item" id="cheeseburger" onclick="updateInfo(cheeseBurger)">
+				Cheeseburger
+				<br>
+				<img src="data:image/png;base64,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
+				AASUVORK5CYII=">
+				<br>				
+				<a href="javascript:void(0)" onclick="addItem(cheeseBurger)">Add To Order</a>
+			</td>
+			<td id="title">Select</td>
+		</tr>
+		<tr>
+			<td class="item" id="pizza" onclick="updateInfo(pizza)">
+				Pizza
+				<br>
+				<img src="data:image/png;base64,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">
+				<br>
+				<a href="javascript:void(0)" onclick="addItem(pizza)">Add To Order</a>
+			</td>
+			<td rowspan="2" id="description">Click the food names on the left for a detailed description, click add to order to add an item to the list.</td>
+		</tr>
+		<tr>			
+			<td class="item" id="hotdog" onclick="updateInfo(hotDog)">
+				Hot Dog
+				<br>
+				<img src="data:image/png;base64,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">
+				<br>
+				<a href="javascript:void(0)" onclick="addItem(hotDog)">Add To Order</a>	
+			</td>
+		</tr>
+		<tr>
+			<td class="item" id="salad" onclick="updateInfo(salad)">
+				Salad
+				<br>
+				<img src="data:image/png;base64,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
+				+H142VC8AAAAASUVORK5CYII=">
+				<br>
+				<a href="javascript:void(0)" onclick="addItem(salad)">Add To Order</a>
+			</td>
+			<td id="price">Item Price</td>
+		</tr>
+		<tr>
+			<td id="selected">Item List<br></td>
+			<td id="total">Item Price<br></span></td>
+		</tr>
+	</table>
+
+</body>
+</html

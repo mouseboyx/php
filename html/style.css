@@ -1,0 +1,52 @@
+body {
+	font-family:sans;
+	background-color:#222222;
+	color:#eeeeee;
+}
+
+input {
+	background-color:#000000;
+	color:#ffffff;	
+}
+
+input:hover {
+	background-color:#111111;
+	color:#ffffff;	
+}
+	
+a:link {
+	color:#00ff00;
+	text-decoration:none;
+}
+
+a:visited {
+	color:#00aa00;
+	text-decoration:none;
+}
+
+a:hover {
+	color:#00ff00;
+	text-decoration:underline;
+}
+
+a:hover
+
+div {
+	border:solid 1px #ffffff;
+	padding:1em;
+	margin-bottom:2px;
+}
+
+h2 {
+	margin-top:5px;
+	margin-bottom:5px;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+h3 {
+
+	margin-top:0px;
+	margin-bottom:0px;
+
+}

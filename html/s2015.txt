@@ -1,0 +1,37 @@
+CWEB 101 350 	10995 	Introduction to the Web using Internet Explorer 	Barbara Mahring 	01/20/15 - 02/17/15 		- 	ONLINE
+CWEB 136 001 	11069 	Introduction to PHP 	Not Assigned 	03/02/15 - 04/06/15 	M 	2:00pm - 4:50pm 	RC 353
+CWEB 160 002 	11079 	Introduction to JavaScript 	Patrick Lafferty 	02/25/15 - 04/01/15 	W 	8:00am - 10:50am 	RC 323
+MUS 121 006 	10950 	Introduction to Music Listening 	Terri Teal 	01/20/15 - 05/22/15 	TR 	8:00am - 9:15am 	OCB 144
+
+REGULAR SPRING HOURS
+JANUARY 5 - MAY 22, 2015      
+BOOKSTORE & C-STORE
+Monday-Thursday:7:45 a.m - 6:00 p.m.
+Friday:  7:45 a.m. - 4:00 p.m.
+Saturday:  9:00 a.m. - 1:00 p.m.
+Sunday:  Closed
+
+ DISCOVERING INTERNET,COMPLETE
+Author 	SHELLY
+Edition 	5TH 14
+ISBN 	9781285845401
+
+ MURACH'S PHP+MYSQL
+Author 	MURACH
+Edition 	11
+ISBN 	9781890774561
+
+ JAVASCRIPT BY EXAMPLE
+Author 	QUIGLEY
+Edition 	2ND 11
+ISBN 	9780137054893
+
+ENJOYMENT OF MUSIC,SHORTER-ACCESS
+Author 	FORNEY
+Edition 	11TH 11
+ISBN 	9780393938791
+
+ENJOYMENT OF MUSIC SHORT ED 4CD
+Author 	FORNEY
+Edition 	11
+ISBN 	9780393140170

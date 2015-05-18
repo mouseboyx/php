@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+	<title>Working with variables</title>
+
+</head>
+<body>
+	<script type="text/javascript">
+		var text="Calculation:";
+		var x=12; // numeric
+		var y=3453; // numeric
+		var z=3;  //numeric
+		r = 2; // circle radius
+		rx = 1456; // rectangle width
+		ry = 48;  // rectangle height
+		// document.write(text);
+		// document.write((x+y)/z);
+		document.write("<br>Rectangle Area:"+(rx*ry));
+		document.write("<br>Circle Area:"+(3.14*r*r));
+		/*
+			multi
+			line
+			comment
+		*/
+		function myFunction() {
+			document.getElementById("calc").innerHTML=text+((x+y)/z)
+		}
+	</script>
+	<br>
+	<p>I can use JavaScript to do my algebra homework!</p>
+	<input type="button" onclick="myFunction()" value="Click Me To Calculate">
+	<p id="calc">What is the answer?</p>
+	<!-- HTML comment -->
+	
+</body>
+</html>

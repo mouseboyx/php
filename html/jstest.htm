@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html onmousemove="mainjs(event)">
+
+<head>
+<meta charset="utf-8">
+<title>js test</title>
+<script type="text/javascript">
+function init() {
+x= 0;
+y= 0;
+thedivs = [];
+divcount = 20;
+thedivs[0] = [];
+thedivs[1] = [];
+thedivs[2] = [];
+thedivs[3] = [];
+factor=0.01;
+
+for (i=0; i<divcount; i++) {
+	thedivs[0][i] = document.createElement("div");
+	thedivs[1][i] = 0;
+	thedivs[2][i] = 0;
+	thedivs[3][i] = (i*i+1)*factor;
+	thedivs[0][i].style.backgroundColor="rgba(0,0,0,"+(1-(i/divcount))+")";
+	thedivs[0][i].style.position="fixed";
+	thedivs[0][i].style.width=(i/1+1)+"px";
+	thedivs[0][i].style.height=(i/1+1)+"px";
+	thedivs[0][i].style.borderRadius=((i+1)/2)+"px";
+	document.body.appendChild(thedivs[0][i]);
+}
+thediv = document.createElement("div");
+thediv.style.backgroundColor="#000000";
+thediv.style.position="fixed";
+thediv.style.display="none";
+thediv.style.width="50px";
+thediv.style.height="50px";
+document.body.appendChild(thediv);
+divx = 0;
+divy = 0;
+// factor = 10;
+setInterval(movediv ,5);
+}
+
+function mainjs(event) {
+x = event.clientX;
+y = event.clientY;
+/*
+thediv.style.top=y-(parseInt(thediv.style.height)/2)+"px";
+thediv.style.left=x-(parseInt(thediv.style.width)/2)+"Px";
+*/
+}
+function movediv() {
+/*
+thediv.style.top=y-(parseInt(thediv.style.height)/2)+"px";
+thediv.style.left=x-(parseInt(thediv.style.width)/2)+"Px";
+*/
+	for (i=0; i<thedivs[0].length-1; i++) {
+		/*
+		if (thedivs[1][i]==0) {
+			thedivs[1][i]=1;
+		}
+		if (thedivs[2][i]==0) {
+			thedivs[2][i]=1;
+		}
+
+		if (thedivs[1][i]<x) {
+			thedivs[1][i]=thedivs[1][i]*thedivs[3][i];
+		}
+		if (thedivs[1][i]>x) {
+			thedivs[1][i]=thedivs[1][i]/thedivs[3][i];
+		}
+		if (thedivs[2][i]<y) {
+			thedivs[2][i]=thedivs[2][i]*thedivs[3][i];
+		}
+		if (thedivs[2][i]>y) {
+			thedivs[2][i]=thedivs[2][i]/thedivs[3][i];
+		}
+		*/
+		if (thedivs[1][i]<x) {
+			thedivs[1][i]+=thedivs[3][i];
+		}
+		if (thedivs[1][i]>x) {
+			thedivs[1][i]-=thedivs[3][i];
+		}
+		if (thedivs[2][i]<y) {
+			thedivs[2][i]+=thedivs[3][i];
+		}
+		if (thedivs[2][i]>y) {
+			thedivs[2][i]-=thedivs[3][i];
+		}
+		/*
+		thedivs[0][i].style.top=thedivs[2][i]-(parseInt(thedivs[0][i].style.height)/2)+"px";
+		thedivs[0][i].style.left=thedivs[1][i]-(parseInt(thedivs[0][i].style.width)/2)+"px";
+		*/
+		thedivs[0][i].style.top=thedivs[2][i]+"px";
+		thedivs[0][i].style.left=thedivs[1][i]+"px";
+		/*
+		thedivs[0][998].style.color="#0000ff";
+		thedivs[0][998].innerHTML=Date();
+		*/
+		
+	}
+/*
+	if (divx<x) {
+		divx+=factor;
+	}
+	if (divx>x) {
+		divx-=factor;
+	}
+	if (divy<y) {
+		divy+=factor;
+	}
+	if (divy>y) {
+		divy-=factor;
+	}
+	thediv.style.top=divy-(parseInt(thediv.style.height)/2)+"px";
+	thediv.style.left=divx-(parseInt(thediv.style.width)/2)+"px";
+*/
+}
+</script>
+<style type="text/css">
+html {
+//	cursor:none;
+	}
+</style>
+</head>
+<body onload="init()">
+
+</body>
+</html>

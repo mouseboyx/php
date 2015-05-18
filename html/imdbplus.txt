@@ -1,0 +1,22 @@
+// ==UserScript==
+// @name        imdbplus
+// @namespace   imdbplus
+// @description imdbplus
+// @include     http://www.imdb.com/title/*
+// @version     1
+// @grant       none
+// ==/UserScript==
+
+time = document.getElementsByTagName("time");
+for (i=0; i<time.length; i++) {
+timeih = time[i].innerHTML;
+timenum=timeih.replace(" min","");
+timenum=parseInt(timenum);
+
+  timehour = Math.floor(timenum/60);
+  timemin = timenum%60;
+  timestring = "("+timehour+":"+timemin+")";
+
+time[i].innerHTML = timeih+" - "+timestring;
+}
+
